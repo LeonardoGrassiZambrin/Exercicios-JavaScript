@@ -1,9 +1,10 @@
 // Bem vindo ao meu programa JavaScript !!
 
-console.log("Meu Primeito Programa JS");
+console.log("\nMeu Primeito Programa JS");
 
-const idadeleo = 17;
-const idadefelipe = 16;
+const idadeLeo = 17;
+const idadeFelipe = 16;
 
-console.log("A idade do Leonardo é " + idadeleo);
-console.log("A idade do Felipe é " + idadefelipe);
+console.log("\nA idade do Leonardo é " + idadeLeo);
+
+console.log("\nA idade do Felipe é " + idadeFelipe);
