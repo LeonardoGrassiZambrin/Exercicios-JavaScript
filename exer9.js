@@ -1,34 +1,77 @@
-// --- Registro das Despesas ---
+const readline = require("readline");
 
-let despesas = {}; // Objeto para armazenar as despesas
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
 
-console.log("--- Registro de Despesas Pessoais ---");
-console.log("Por favor, informe o valor para cada categoria. Digite 0 se não houver despesa nesta categoria.");
+let despesas = {};
+let categorias = [
+    "Moradia (Aluguel/Prestação)",
+    "Alimentação (Supermercao/Feira)",
+    "Transporte (Combustivel)",
+    "Laser (Passeio/Cinema)",
+    "Contas (Luaz, Água, Internet, Telefone)",
+    "Educação (Mensalidade/Curso)"
+];
 
-// Solicita o valor para cada categoria de despesa
-despesas.moradia = parseFloat(prompt("Valor da Moradia (Aluguel/Prestação): R$ "));
-despesas.alimentacao = parseFloat(prompt("Valor da Alimentação (Supermercado/Feira): R$ "));
-despesas.transporte = parseFloat(prompt("Valor do Transporte (Combustível/Público): R$ "));
-despesas.lazer = parseFloat(prompt("Valor do Lazer (Passeios/Cinema): R$ "));
-despesas.contas = parseFloat(prompt("Valor das Contas (Luz, Água, Internet, Telefone): R$ "));
-despesas.educacao = parseFloat(prompt("Valor da Educação (Mensalidade/Cursos): R$ "));
+let nomesChaves = [
+    "Moradia",
+    "Alimentação",
+    "Transporte",
+    "Laser",
+    "Contas",
+    "Educação"
+];
 
-console.log("\n--- Despesas Registradas ---");
-for (const categoria in despesas) {
-  // Verifica se o valor é um número válido antes de exibir
-  if (isNaN(despesas[categoria]) || despesas[categoria] < 0) {
-    console.log(categoria.charAt(0).toUpperCase() + categoria.slice(1) + ": Valor Inválido.");
-    despesas[categoria] = 0; // Define como 0 para não afetar o cálculo
-  } else {
-    console.log(`${categoria.charAt(0).toUpperCase() + categoria.slice(1)}: R$ ${despesas[categoria].toFixed(2)}`);
-  }
+let index = 0;
+
+console.log("--- Resgistro de Despesas Pessoais ---");
+console.log("Por favor, informe o valor para cada categoria, digite 0 se não hover despesas nesta categoria.");
+
+function Perguntar() {
+    if (index < categorias.length) {
+        rl.question(`Valor de ${categorias[index]}: R$ `, (resposta) => {
+            despesas[nomesChaves[index]] = parseFloat(resposta);
+            index++;
+            Perguntar();
+        });
+    } else {
+        MostrarResultados();
+        rl.close();
+    }
 }
 
-// --- Cálculo do Total de Despesas ---
-let totalDespesas = 0;
-for (const categoria in despesas) {
-  totalDespesas += despesas[categoria];
+function MostrarResultados() {
+    console.log("\n--- Despesas Registradas ---");
+    for (const categoria in despesas) {
+        if (!isNaN(despesas[categoria]) && despesas[categoria] >= 0) {
+            console.log(`${categoria.charAt(0).toUpperCase() + categoria.slice(1)}: R$ ${despesas[categoria].toFixed(2)}`);
+        } else {
+            console.log(`${categoria.charAt(0).toUpperCase() + categoria.slice(1)}: Valor Inválido`);
+            despesas[categoria] = 0;
+        }
+    }
+    console.log("----------------------------");
+
+    let totalDespesas = 0;
+    let numerosCategoriasComDespesas = 0;
+
+    for (const categoria in despesas) {
+        if (!isNaN(despesas[categoria]) && despesas[categoria] >= 0) {
+            totalDespesas += despesas[categoria];
+            if (despesas[categoria] > 0) {
+                numerosCategoriasComDespesas++;
+            }
+        }
+    }
+
+    console.log(`Total de Despesas: R$ ${totalDespesas.toFixed(2)}`);
+    if (numerosCategoriasComDespesas > 0) {
+        let mediaDespesas = totalDespesas / numerosCategoriasComDespesas;
+        console.log(`Média de Despesas por Categoria com Gasto: R$ ${mediaDespesas.toFixed(2)}`);
+    }
+    console.log("============================");
 }
 
-console.log("\n--------------------------------------");
-console.log(`Total de Despesas: R$ ${totalDespesas.toFixed(2)}`);
+Perguntar()
